@@ -4,7 +4,8 @@ module.exports = app => {
   app.post("/items", controller.addItem);
   app.get("/ItemsList", controller.findAll);
 
-
+// add location 
+// app.post("/insertmap", controller.addmap);
 
 
   // Update a items with itemsId

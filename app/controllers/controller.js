@@ -4,6 +4,7 @@ const Item = require("../models/item.model.js");
 
 //add items to our database 
 exports.addItem = (req, res) => {
+  console.log(req.body,'req,body')
   // Validate request
   if (!req.body) {
     res.status(400).send({
@@ -19,6 +20,7 @@ exports.addItem = (req, res) => {
       weight: req.body.weight,
       image: req.body.image,
       price: req.body.price,
+      location:req.body.location,
       user_id:req.body.user_id
   });
 
@@ -33,6 +35,8 @@ exports.addItem = (req, res) => {
     // console.log("data:",data)
   });
 };
+
+
 
 
 // Update a items identified by the itemsId in the request

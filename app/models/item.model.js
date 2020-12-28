@@ -9,6 +9,7 @@ const Item = function(item) {
   this.description = item.description;
   this.image = item.image;
   this.price = item.price;
+  this.location = item.location;
   this.user_id = item.user_id
   //this.foreign key = user.id;
 };
@@ -19,12 +20,13 @@ const Item = function(item) {
 //==========================================================================
 // creating the request to add the item to the table
 Item.addItem = (newItem, result) => {
+  console.log(newItem)
   var mySql = `INSERT INTO items
         (
-            category, quantity, description, weight, image, price ,user_id
+            category, quantity, description, weight, image, price ,location ,user_id
         )
         VALUES
-         (?,?,?,?,?,?,? )`;
+         (?,?,?,?,?,?,?,? )`;
          sql.query(mySql,
             [
               newItem.category,
@@ -33,6 +35,7 @@ Item.addItem = (newItem, result) => {
               newItem.weight,
               newItem.image,
               newItem.price,
+              newItem.location,
               newItem.user_id
             ],(err, res) => {
                   if (err) {
@@ -58,6 +61,23 @@ Item.getAll = result => {
     result(null, res);
   });
 };
+
+
+// add location to the table
+Item.addmap = (item,result) => {
+  console.log(item)
+  var mySql = `INSERT INTO items ( location, user_id ) VALUES ( ?,? )`
+   sql.query(mySql,
+      [item.location, item.user_id]
+      ,(err, res) => {
+            if (err) {
+              console.log("error: ", err);
+              result(err, null);
+              return;
+            }
+    });
+};
+
 
 
 
