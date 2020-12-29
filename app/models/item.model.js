@@ -10,7 +10,11 @@ const Item = function(item) {
   this.image = item.image;
   this.price = item.price;
   this.location = item.location;
-  this.user_id = item.user_id
+  this.user_id = item.user_id;
+  this.status = item.status;
+  this.acceptationStat = this.acceptationStat;
+  this.rejectionStat = this.rejectionStat;
+
   //this.foreign key = user.id;
 };
 
@@ -23,10 +27,10 @@ Item.addItem = (newItem, result) => {
   console.log(newItem)
   var mySql = `INSERT INTO items
         (
-            category, quantity, description, weight, image, price ,location ,user_id
+            category, quantity, description, weight, image, price ,location,user_id,status
         )
         VALUES
-         (?,?,?,?,?,?,?,? )`;
+         (?,?,?,?,?,?,?,? ,?)`;
          sql.query(mySql,
             [
               newItem.category,
@@ -36,7 +40,8 @@ Item.addItem = (newItem, result) => {
               newItem.image,
               newItem.price,
               newItem.location,
-              newItem.user_id
+              newItem.user_id,
+              "Pending"
             ],(err, res) => {
                   if (err) {
                     console.log("error: ", err);
@@ -57,38 +62,19 @@ Item.getAll = result => {
       result(null, err);
       return;
     }
-   
+    console.log("customers: ", res);
     result(null, res);
   });
 };
 
 
-// add location to the table
-Item.addmap = (item,result) => {
-  console.log(item)
-  var mySql = `INSERT INTO items ( location, user_id ) VALUES ( ?,? )`
-   sql.query(mySql,
-      [item.location, item.user_id]
-      ,(err, res) => {
-            if (err) {
-              console.log("error: ", err);
-              result(err, null);
-              return;
-            }
-    });
-};
-
-
-
 
 // updating the items in our database
 Item.updateById = (id, newItem, result) => {
-
   sql.query(
-    "UPDATE items SET category = ?, quantity = ?, description = ?, weight = ? ,price = ? WHERE itemID = ?",
+    "UPDATE items SET category = ?, quantity = ?, description = ?, weight = ?, price = ? WHERE itemID = ?",
     [newItem.category, newItem.quantity, newItem.description,newItem.weight,newItem.price,id],
     (err, res) => {
-  
       if (err) {
         console.log("error: ", err);
         result(null, err);
@@ -102,11 +88,10 @@ Item.updateById = (id, newItem, result) => {
 
       console.log("updated customer: ", { id: id, ...newItem });
       result(null, { id: id, ...newItem });
-      console.log(id,"id")
+      console.log(id, "id")
     }
-  )
-}
-
+  );
+};
 
 Item.remove = (id, result) => {
   sql.query(`DELETE FROM items WHERE itemID = '${id}'`, (err, res) => {
@@ -125,5 +110,17 @@ Item.remove = (id, result) => {
   });
 };
 
+Item.actions = (actionsInfo, result) => {
+  var mySql = `UPDATE items SET status = '${actionsInfo.status}',acceptationStat = ${actionsInfo.acceptationStat}, rejectionStat = ${actionsInfo.rejectionStat} WHERE itemID = '${actionsInfo.itemId}'`;
+         sql.query(mySql,(err, res) => {
+                  if (err) {
+                    console.log("error: ", err);
+                    result(err, null);
+                    return;
+                  }
+        console.log("created item: ", { id: res.insertId, ...actionsInfo });
+            result(null, { id: res.insertId, ...actionsInfo });
+          });
+};
 
 module.exports = Item;

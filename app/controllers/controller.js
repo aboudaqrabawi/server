@@ -4,7 +4,6 @@ const Item = require("../models/item.model.js");
 
 //add items to our database 
 exports.addItem = (req, res) => {
-  console.log(req.body,'req,body')
   // Validate request
   if (!req.body) {
     res.status(400).send({
@@ -14,6 +13,7 @@ exports.addItem = (req, res) => {
   console.log(".......",req.body);   //the object (data) which we get from front end
   // items send by the front end 
   const item = ({
+       status:req.body.status,
        category: req.body.category,
       quantity: req.body.quantity,
       description: req.body.description,
@@ -22,6 +22,7 @@ exports.addItem = (req, res) => {
       price: req.body.price,
       location:req.body.location,
       user_id:req.body.user_id
+
   });
 
   // Save Customer in the database
@@ -35,9 +36,6 @@ exports.addItem = (req, res) => {
     // console.log("data:",data)
   });
 };
-
-
-
 
 // Update a items identified by the itemsId in the request
 
@@ -54,7 +52,6 @@ exports.findAll = (req, res) => {
   });
 };
 
-
 exports.findAdmin = (req, res) => {
   User.getAdmin((err, data) => {
     if (err)
@@ -65,6 +62,7 @@ exports.findAdmin = (req, res) => {
     else res.send(data);
   });
 };
+
 
 exports.findUser = (req, res) => {
   User.GetUser((err, data) => {
@@ -77,10 +75,9 @@ exports.findUser = (req, res) => {
   });
 };
 
-
+// Update a items identified by the itemsId in the request
 exports.updateitems = (req, res) => {
   // Validate Request
-  console.log(req.body)
   if (!req.body) {
     res.status(400).send({
       message: "Content can not be empty!"
@@ -110,7 +107,6 @@ exports.updateitems = (req, res) => {
 };
 
 
-
 // Delete a specific item from the database
 exports.deleteItem = (req, res) => {
   Item.remove(req.params.id, (err, data) => {
@@ -128,6 +124,27 @@ exports.deleteItem = (req, res) => {
   });
 };
 
+exports.actions = (req, res) => {
+  console.log(".......",req.body);   //the object (data) which we get from front end
+  // items send by the front end
+  const item = ({
+    itemId: req.body.itemId,
+    status: req.body.status,
+    acceptationStat:req.body.acceptationStat,
+    rejectionStat:req.body.rejectionStat
+  });
+  // Save Sataus in the database
+  Item.actions(item, (err, data) => {
+    if (err)
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while adding the sataus."
+      });
+    else res.send(data);
+    // console.log("data:",data)
+  });
+};
+
 
 /// update users and admin 
 exports.updateUsers = (req, res) => {
@@ -138,14 +155,11 @@ exports.updateUsers = (req, res) => {
       message: "Content can not be empty!"
     });
   }
-
   console.log('User',req.body);
-
  User.updateById(
     req.params.id,
     new User(req.body),
     console.log(req.body),
-    
     (err, data) => {
       console.log("id", req.params.id)
       if (err) {
