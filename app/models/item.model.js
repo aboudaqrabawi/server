@@ -58,11 +58,11 @@ Item.addItem = (newItem, result) => {
 Item.getAll = result => {
   sql.query("SELECT * FROM items", (err, res) => {
     if (err) {
-      console.log("error: ", err);
+      
       result(null, err);
       return;
     }
-    console.log("customers: ", res);
+    
     result(null, res);
   });
 };
@@ -71,6 +71,7 @@ Item.getAll = result => {
 
 // updating the items in our database
 Item.updateById = (id, newItem, result) => {
+  console.log(id)
   sql.query(
     "UPDATE items SET category = ?, quantity = ?, description = ?, weight = ?, price = ? WHERE itemID = ?",
     [newItem.category, newItem.quantity, newItem.description,newItem.weight,newItem.price,id],
@@ -86,7 +87,7 @@ Item.updateById = (id, newItem, result) => {
         return;
       }
 
-      console.log("updated customer: ", { id: id, ...newItem });
+      // console.log("updated customer: ", { id: id, ...newItem });
       result(null, { id: id, ...newItem });
       console.log(id, "id")
     }

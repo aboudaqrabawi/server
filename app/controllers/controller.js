@@ -77,6 +77,7 @@ exports.findUser = (req, res) => {
 
 // Update a items identified by the itemsId in the request
 exports.updateitems = (req, res) => {
+  console.log(req.body )
   // Validate Request
   if (!req.body) {
     res.status(400).send({
